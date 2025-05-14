@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Poem Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        h1 {
+            color: #3f51b5;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 600px;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 20px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #3f51b5;
+            color: white;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #303f9f;
+        }
+
+        #poem {
+            background-color: #f1f1f1;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>AI Poem Generator</h1>
+        <div class="form-group">
+            <label for="topic">Topic</label>
+            <input type="text" id="topic" name="topic" placeholder="e.g., love, nature, sadness">
+        </div>
+        <div class="form-group">
+            <label for="style">Style</label>
+            <select id="style" name="style">
+                <option value="Haiku">Haiku</option>
+                <option value="Romantic">Romantic</option>
+                <option value="Sad">Sad</option>
+                <option value="Shakespearean">Shakespearean</option>
+            </select>
+        </div>
+        <button onclick="generatePoem()">Generate Poem</button>
+        
+        <h2>Your Poem:</h2>
+        <pre id="poem">Your generated poem will appear here...</pre>
+    </div>
+
+    <script>
+        async function generatePoem() {
+            const topic = document.getElementById("topic").value;
+            const style = document.getElementById("style").value;
+
+            // Validate input
+            if (!topic.trim()) {
+                alert("Please enter a topic for the poem!");
+                return;
+            }
+
+           const response = await fetch('http://127.0.0.1:8000/generate', {
+
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    topic: topic,
+                    style: style
+                })
+            });
+
+            console.log(response.status);  // Log the response status
+
+            if (!response.ok) {
+                alert("Something went wrong. Please try again later.");
+                return;
+            }
+
+            const result = await response.json();
+            document.getElementById("poem").innerText = result.poem;
+        }
+    </script>
+
+</body>
+</html>
